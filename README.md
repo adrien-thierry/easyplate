@@ -9,7 +9,6 @@ Yes, that's all. myView is a very simple js object :
 
 ```javascript
 var myView =
-var myView =
 {
    "div1":
     {
