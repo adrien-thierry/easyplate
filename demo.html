@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <script src="easyplate.js"></script>
+  </head>
+  <body>
+
+    <div id="content">
+
+    </div>
+
+
+    <script>
+      var myView =
+      {
+         "title":
+          {
+             "tag": "div",
+             "attribute":
+             {
+                 "class": "someClass someClass2",
+                 "id": "div_1"
+             },
+             "child":
+             {
+                  "br1":
+                  {
+                      "tag": "br"
+                  },
+                 "comment":
+                 {
+                      "tag": "span",
+                      "innerHTML": "IN SPAN",
+                      "attribute":
+                      {
+                          "style":"color:red"
+                      }
+                 }
+             }
+          },
+          "div2":
+          {
+              // default tag value set to "div"
+              "attribute":
+              {
+                  "id": "div_2"
+              },
+              "innerHTML": "IN DIV 2"
+          }
+      }
+      var data = [ { "title": "bla", "comment" : ["un", "deux", "trois"] }, { "title": "blo", "comment" : ["quatre", "cinq", "six"] } ];
+
+      // this is for example
+      renderView(myView, document.getElementById("content"), data[0]);
+      renderView(myView, document.getElementById("content"));
+      renderView(myView, document.getElementById("content"), data[1]);
+
+      // to render the view as a string :
+
+      var myResult = renderView(myView, null, data[1]);
+      console.log("String render : " + myResult);
+
+      // we can also do :
+      /*
+
+      for(var i in data)
+      {
+        renderView(myView, document.getElementById("content"), data[i]);
+      }
+
+      */
+
+    </script>
+
+  </body>
+
+</html>
