@@ -12,7 +12,7 @@ function renderView(viewObj, parent, dataObj)
     if(dataObj && dataObj[v] && dataObj[v].constructor === Array) viewObj[v].number = dataObj[v].length;
 
     // number of iterations of this object
-    if(viewObj[v].number == undefined) viewObj[v].number = 1;
+    if(viewObj[v].number === undefined) viewObj[v].number = 1;
 
 	  // if no tag, set it to div by default
 	  if(!viewObj[v].tag) viewObj[v].tag = "div";
@@ -45,7 +45,7 @@ function renderView(viewObj, parent, dataObj)
       if(viewObj[v].child)
       {
         // create each child element with parent = current scope element recursively
-        renderView(viewObj[v].child, element, dataObj)
+        renderView(viewObj[v].child, element, dataObj);
       }
 
       // here append child to parent, you can use insertBefore either etc
