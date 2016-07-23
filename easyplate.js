@@ -1,4 +1,11 @@
-// The main and unique function !
+/**
+ * renderView - The unique method of easyplate :)
+ * @method
+ * @param  {object} viewObj The view object
+ * @param  {element} parent The parent DOM element, could be empty, so return a string
+ * @param  {object} dataObj The data that could be mapped to the view : each key is mapped to innerHTML element in viewObj
+ * @return {string} Return a string of generated html
+ */
 function renderView(viewObj, parent, dataObj)
 {
 
