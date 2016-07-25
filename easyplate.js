@@ -4,15 +4,15 @@
  * @param  {object} viewObj The view object
  * @param  {element} parent The parent DOM element, could be empty, so return a string
  * @param  {object} dataObj The data that could be mapped to the view : each key is mapped to innerHTML element in viewObj, if dataObj[key] is an object, this object is used in recursivity
- * @param  {object] hook Object with hook functions for innerHTML and input
+ * @param  {object] hook Object with hook functions for innerHTML and input, format : hook.innerHTML(data, key){return data}
  * @return {string} Return a string of generated html
  */
 function renderView(viewObj, parent, dataObj, hook)
 {
 
   if(!hook) hook = {};
-  if(!hook.innerHTML) hook.innerHTML = function(data){return data;};
-  if(!hook.input) hook.input = function(data){return data;};
+  if(!hook.innerHTML) hook.innerHTML = function(data, key){return data;};
+  if(!hook.input) hook.input = function(data, key){return data;};
   // if parent is null or undefined, we stock outerHTML of rendered element in
 	var viewString = "";
 
@@ -43,21 +43,21 @@ function renderView(viewObj, parent, dataObj, hook)
       // if innerHTML, set it
       if(viewObj[v].innerHTML)
       {
-        element.innerHTML = hook.innerHTML(viewObj[v].innerHTML);
+        element.innerHTML = hook.innerHTML(viewObj[v].innerHTML, v);
       }
 
       // if data is an aray, override innerHTML with data i
       if(dataObj && dataObj[v] && dataObj[v].constructor === Array)
       {
-        if( viewObj[v].tag == "input") element.setAttribute('value', hook.input(dataObj[v][i]));
-        else element.innerHTML = hook.innerHTML(dataObj[v][i]);
+        if( viewObj[v].tag == "input") element.setAttribute('value', hook.input(dataObj[v][i]), v);
+        else element.innerHTML = hook.innerHTML(dataObj[v][i], v);
       }
 
       // else set data if string, number etc
       else if(dataObj && dataObj[v] && typeof dataObj[v] != "object")
       {
-        if( viewObj[v].tag == "input") element.setAttribute('value', hook.input(dataObj[v]));
-        else element.innerHTML = hook.innerHTML(dataObj[v]);
+        if( viewObj[v].tag == "input") element.setAttribute('value', hook.input(dataObj[v]), v);
+        else element.innerHTML = hook.innerHTML(dataObj[v], v);
       }
 
       // if child, we create childs

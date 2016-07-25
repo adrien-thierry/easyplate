@@ -62,9 +62,9 @@
       var data = [ { "title": "bla", "comment" : ["un", "deux", "trois"], "obj":{"age":"30"} }, { "title": "blo", "comment" : ["quatre", "cinq", "six"], "obj":{"age":"45"} } ];
 
       var hook = {};
-      hook.innerHTML = function(data)
+      hook.innerHTML = function(data, key)
       {
-        if(data) return data += " HOOKED ";
+        if(data) return data += " -> HOOKED FROM : " + key + " | ";
         else return data;
       }
 
