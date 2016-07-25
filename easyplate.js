@@ -60,7 +60,7 @@ function renderView(viewObj, parent, dataObj)
       if(viewObj[v].child)
       {
         // create each child element with parent = current scope element recursively
-        if(typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v]);
+        if(dataObj && dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v]);
         else renderView(viewObj[v].child, element, dataObj);
       }
 
