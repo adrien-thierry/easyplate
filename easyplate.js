@@ -4,6 +4,7 @@
  * @param  {object} viewObj The view object
  * @param  {element} parent The parent DOM element, could be empty, so return a string
  * @param  {object} dataObj The data that could be mapped to the view : each key is mapped to innerHTML element in viewObj, if dataObj[key] is an object, this object is used in recursivity
+ * @param  {object] hook Object with hook functions for innerHTML and input
  * @return {string} Return a string of generated html
  */
 function renderView(viewObj, parent, dataObj, hook)
