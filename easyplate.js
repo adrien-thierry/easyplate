@@ -4,15 +4,13 @@
  * @param  {object} viewObj The view object
  * @param  {element} parent The parent DOM element, could be empty, so return a string
  * @param  {object} dataObj The data that could be mapped to the view : each key is mapped to innerHTML element in viewObj, if dataObj[key] is an object, this object is used in recursivity
- * @param  {object] hook Object with hook functions for innerHTML and input, format : hook.innerHTML(data, key){return data}
  * @return {string} Return a string of generated html
  */
-function renderView(viewObj, parent, dataObj, hook)
+function renderView(viewObj, parent, dataObj)
 {
+  // for speed, no need to check if empty or not
+  if(!dataObj) dataObj = {};
 
-  if(!hook) hook = {};
-  if(!hook.innerHTML) hook.innerHTML = function(data, key){return data;};
-  if(!hook.input) hook.input = function(data, key){return data;};
   // if parent is null or undefined, we stock outerHTML of rendered element in
 	var viewString = "";
 
@@ -20,7 +18,7 @@ function renderView(viewObj, parent, dataObj, hook)
   {
 
     // if data is an array
-    if(dataObj && dataObj[v] && dataObj[v].constructor === Array) viewObj[v].number = dataObj[v].length;
+    if(dataObj[v] && dataObj[v].constructor === Array) viewObj[v].number = dataObj[v].length;
 
     // number of iterations of this object
     if(viewObj[v].number === undefined) viewObj[v].number = 1;
@@ -43,29 +41,29 @@ function renderView(viewObj, parent, dataObj, hook)
       // if innerHTML, set it
       if(viewObj[v].innerHTML)
       {
-        element.innerHTML = hook.innerHTML(viewObj[v].innerHTML, v);
+        element.innerHTML = viewObj[v].innerHTML;
       }
 
       // if data is an aray, override innerHTML with data i
-      if(dataObj && dataObj[v] && dataObj[v].constructor === Array)
+      if(dataObj[v] && dataObj[v].constructor === Array)
       {
-        if( viewObj[v].tag == "input") element.setAttribute('value', hook.input(dataObj[v][i]), v);
-        else element.innerHTML = hook.innerHTML(dataObj[v][i], v);
+        if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v][i]);
+        else element.innerHTML = dataObj[v][i];
       }
 
       // else set data if string, number etc
-      else if(dataObj && dataObj[v] && typeof dataObj[v] != "object")
+      else if(dataObj[v] && typeof dataObj[v] != "object")
       {
-        if( viewObj[v].tag == "input") element.setAttribute('value', hook.input(dataObj[v]), v);
-        else element.innerHTML = hook.innerHTML(dataObj[v], v);
+        if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v]);
+        else element.innerHTML = dataObj[v];
       }
 
       // if child, we create childs
       if(viewObj[v].child)
       {
         // create each child element with parent = current scope element recursively
-        if(dataObj && dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v], hook);
-        else renderView(viewObj[v].child, element, dataObj, hook);
+        if(dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v]);
+        else renderView(viewObj[v].child, element, dataObj);
       }
 
       // here append child to parent, you can use insertBefore either etc
