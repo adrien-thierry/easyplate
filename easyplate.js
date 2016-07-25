@@ -3,7 +3,7 @@
  * @method
  * @param  {object} viewObj The view object
  * @param  {element} parent The parent DOM element, could be empty, so return a string
- * @param  {object} dataObj The data that could be mapped to the view : each key is mapped to innerHTML element in viewObj
+ * @param  {object} dataObj The data that could be mapped to the view : each key is mapped to innerHTML element in viewObj, if dataObj[key] is an object, this object is used in recursivity
  * @return {string} Return a string of generated html
  */
 function renderView(viewObj, parent, dataObj)
@@ -43,16 +43,25 @@ function renderView(viewObj, parent, dataObj)
       }
 
       // if data is an aray, override innerHTML with data i
-      if(dataObj && dataObj[v] && dataObj[v].constructor === Array) element.innerHTML = dataObj[v][i];
+      if(dataObj && dataObj[v] && dataObj[v].constructor === Array)
+      {
+        if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v][i]);
+        else element.innerHTML = dataObj[v][i];
+      }
 
       // else set data if string, number etc
-      else if(dataObj && dataObj[v]) element.innerHTML = dataObj[v];
+      else if(dataObj && dataObj[v] && typeof dataObj[v] != "object")
+      {
+        if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v]);
+        else element.innerHTML = dataObj[v];
+      }
 
       // if child, we create childs
       if(viewObj[v].child)
       {
         // create each child element with parent = current scope element recursively
-        renderView(viewObj[v].child, element, dataObj);
+        if(typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v]);
+        else renderView(viewObj[v].child, element, dataObj);
       }
 
       // here append child to parent, you can use insertBefore either etc
