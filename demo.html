@@ -61,10 +61,17 @@
       }
       var data = [ { "title": "bla", "comment" : ["un", "deux", "trois"], "obj":{"age":"30"} }, { "title": "blo", "comment" : ["quatre", "cinq", "six"], "obj":{"age":"45"} } ];
 
+      var hook = {};
+      hook.innerHTML = function(data)
+      {
+        if(data) return data += " HOOKED ";
+        else return data;
+      }
+
       // this is for example
       renderView(myView, document.getElementById("content"), data[0]);
       renderView(myView, document.getElementById("content"));
-      renderView(myView, document.getElementById("content"), data[1]);
+      renderView(myView, document.getElementById("content"), data[1], hook);
 
       // to render the view as a string :
 

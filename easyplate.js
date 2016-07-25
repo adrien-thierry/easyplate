@@ -6,9 +6,12 @@
  * @param  {object} dataObj The data that could be mapped to the view : each key is mapped to innerHTML element in viewObj, if dataObj[key] is an object, this object is used in recursivity
  * @return {string} Return a string of generated html
  */
-function renderView(viewObj, parent, dataObj)
+function renderView(viewObj, parent, dataObj, hook)
 {
 
+  if(!hook) hook = {};
+  if(!hook.innerHTML) hook.innerHTML = function(data){return data;};
+  if(!hook.input) hook.input = function(data){return data;};
   // if parent is null or undefined, we stock outerHTML of rendered element in
 	var viewString = "";
 
@@ -39,29 +42,29 @@ function renderView(viewObj, parent, dataObj)
       // if innerHTML, set it
       if(viewObj[v].innerHTML)
       {
-        element.innerHTML = viewObj[v].innerHTML;
+        element.innerHTML = hook.innerHTML(viewObj[v].innerHTML);
       }
 
       // if data is an aray, override innerHTML with data i
       if(dataObj && dataObj[v] && dataObj[v].constructor === Array)
       {
-        if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v][i]);
-        else element.innerHTML = dataObj[v][i];
+        if( viewObj[v].tag == "input") element.setAttribute('value', hook.input(dataObj[v][i]));
+        else element.innerHTML = hook.innerHTML(dataObj[v][i]);
       }
 
       // else set data if string, number etc
       else if(dataObj && dataObj[v] && typeof dataObj[v] != "object")
       {
-        if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v]);
-        else element.innerHTML = dataObj[v];
+        if( viewObj[v].tag == "input") element.setAttribute('value', hook.input(dataObj[v]));
+        else element.innerHTML = hook.innerHTML(dataObj[v]);
       }
 
       // if child, we create childs
       if(viewObj[v].child)
       {
         // create each child element with parent = current scope element recursively
-        if(dataObj && dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v]);
-        else renderView(viewObj[v].child, element, dataObj);
+        if(dataObj && dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v], hook);
+        else renderView(viewObj[v].child, element, dataObj, hook);
       }
 
       // here append child to parent, you can use insertBefore either etc
