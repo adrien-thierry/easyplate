@@ -1,3 +1,8 @@
+/*
+  Copyright (C) 2016  Adrien THIERRY
+  http://seraum.com
+*/
+
 /**
  * renderView - The unique method of easyplate :)
  * @method
