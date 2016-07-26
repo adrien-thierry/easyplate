@@ -1,4 +1,4 @@
-# easyplate
+# EasyPlate
 The simpliest engine for template/view rendering in JS
 
 ```javascript
@@ -48,7 +48,7 @@ var myView =
 }
 ```
 
-the result is : 
+the result is :
 ```html
 <div class="someClass someClass2" id="div_1">IN DIV<br><span style="color:red">IN SPAN</span></div><div id="div_2">IN DIV 2</div>
 ```
@@ -59,6 +59,15 @@ View object is a simple JS object. "child" designed the child of current object,
 
 # renderView parameters
 
-The renderView function take two parameters :
+The renderView function take three parameters :
 - viewObj, the object we want to render,
 - parent, the parent element in which we want append the view. If parent is empty (== undefined || null), then renderView return a string.
+- dataObj, data you want to be loaded in innerHTML/value of element of your view.
+
+# Performance
+
+This template renderer has a very low memory footprint, ans for an average view (100 lines of json) take less than 10ms to finish.
+
+# Creator
+
+Creator and main developper : Adrien THIERRY https://fr.linkedin.com/in/adrien-thierry-6448a664
