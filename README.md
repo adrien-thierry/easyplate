@@ -66,7 +66,7 @@ The renderView function take three parameters :
 
 # Performance
 
-This template renderer has a very low memory footprint, ans for an average view (100 lines of json) take less than 10ms to finish.
+This template renderer has a very low memory footprint, and for an average view (100 lines of json) take less than 10ms to finish.
 
 # Creator
 
