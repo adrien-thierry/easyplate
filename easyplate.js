@@ -10,15 +10,36 @@
  * @param  {object} viewObj The view object
  * @param  {element} parent The parent DOM element, could be empty, so return a string
  * @param  {object} dataObj The data that could be mapped to the view : each key is mapped to innerHTML element in viewObj, if dataObj[key] is an object, this object is used in recursivity
- * @param {object} option An object with rendering options
+ * @param {object} optionObj An object with rendering options
  * @return {string} Return a string of generated html
  */
-function renderView(viewObj, parent, dataObj, option)
+function renderView(viewObj, parent, dataObj, optionObj)
 {
   var once = false;
   // for speed, no need to check if empty or not
   if(!dataObj) dataObj = {};
-
+  if(!optionObj) optionObj =
+  {
+    // default function, override it for fit your needs
+    setValue: function(element, value)
+    {
+      switch (element.tagName)
+      {
+        case "INPUT":
+          element.setAttribute("value", value);
+          break;
+        case "IMG":
+          element.setAttribute("src", value);
+          break;
+        case "A":
+          element.setAttribute("href", value);
+          break;
+        default:
+          element.innerHTML = value;
+          break;
+      }
+    }
+  };
   // if parent is null or undefined, we stock outerHTML of rendered element in
 	var viewString = "";
 
@@ -27,7 +48,7 @@ function renderView(viewObj, parent, dataObj, option)
     // if we have an array, we loop on it
     for(var i = 0; i < dataObj.length; i++)
     {
-      viewString += renderView(viewObj, parent, dataObj[i]);
+      viewString += renderView(viewObj, parent, dataObj[i], optionObj);
     }
   }
   else if(typeof dataObj == "object")
@@ -68,28 +89,26 @@ function renderView(viewObj, parent, dataObj, option)
           if(typeof dataObj[v][i] == "object")
           {
             //once = true;
-            renderView(viewObj[v].child, element, dataObj[v][i]);
+            renderView(viewObj[v].child, element, dataObj[v][i], optionObj);
           }
           else
           {
-            if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v][i]);
-            else element.innerHTML = dataObj[v][i];
+            optionObj.setValue(element, dataObj[v][i]);
           }
         }
 
         // else set data if string, number etc
         else if(dataObj[v] && typeof dataObj[v] != "object")
         {
-          if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v]);
-          else element.innerHTML = dataObj[v];
+          optionObj.setValue(element, dataObj[v]);
         }
 
         // if child, we create childs
         if(!once && viewObj[v].child)
         {
           // create each child element with parent = current scope element recursively
-          if(dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v]);
-          else renderView(viewObj[v].child, element, dataObj);
+          if(dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v], optionObj);
+          else renderView(viewObj[v].child, element, dataObj, optionObj);
         }
 
         // here append child to parent, you can use insertBefore either etc
@@ -102,7 +121,7 @@ function renderView(viewObj, parent, dataObj, option)
    else
    {
      // dataObj is bad, so we replace it by {}
-     viewString += renderView(viewObj, parent, {});
+     viewString += renderView(viewObj, parent, {}, optionObj);
    }
 
    // return viewString in all case
