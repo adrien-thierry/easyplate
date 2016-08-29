@@ -10,10 +10,12 @@
  * @param  {object} viewObj The view object
  * @param  {element} parent The parent DOM element, could be empty, so return a string
  * @param  {object} dataObj The data that could be mapped to the view : each key is mapped to innerHTML element in viewObj, if dataObj[key] is an object, this object is used in recursivity
+ * @param {object} option An object with rendering options
  * @return {string} Return a string of generated html
  */
-function renderView(viewObj, parent, dataObj)
+function renderView(viewObj, parent, dataObj, option)
 {
+  var once = false;
   // for speed, no need to check if empty or not
   if(!dataObj) dataObj = {};
 
@@ -53,8 +55,16 @@ function renderView(viewObj, parent, dataObj)
       // if data is an aray, override innerHTML with data i
       if(dataObj[v] && dataObj[v].constructor === Array)
       {
-        if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v][i]);
-        else element.innerHTML = dataObj[v][i];
+        if(typeof dataObj[v][i] == "object")
+        {
+          once = true;
+          renderView(viewObj[v].child, element, dataObj[v][i]);
+        }
+        else
+        {
+          if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v][i]);
+          else element.innerHTML = dataObj[v][i];
+        }
       }
 
       // else set data if string, number etc
@@ -65,7 +75,7 @@ function renderView(viewObj, parent, dataObj)
       }
 
       // if child, we create childs
-      if(viewObj[v].child)
+      if(!once && viewObj[v].child)
       {
         // create each child element with parent = current scope element recursively
         if(dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v]);
