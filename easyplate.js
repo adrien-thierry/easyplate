@@ -22,71 +22,87 @@ function renderView(viewObj, parent, dataObj, option)
   // if parent is null or undefined, we stock outerHTML of rendered element in
 	var viewString = "";
 
-  for(var v in viewObj)
+  if(dataObj.constructor === Array)
   {
-
-    // if data is an array
-    if(dataObj[v] && dataObj[v].constructor === Array) viewObj[v].number = dataObj[v].length;
-
-    // number of iterations of this object
-    if(viewObj[v].number === undefined) viewObj[v].number = 1;
-
-	  // if no tag, set it to div by default
-	  if(!viewObj[v].tag) viewObj[v].tag = "div";
-
-    for(var i = 0; i < viewObj[v].number; i++)
+    // if we have an array, we loop on it
+    for(var i = 0; i < dataObj.length; i++)
     {
-      // create obj with tag value
-      var element = document.createElement(viewObj[v].tag);
-
-      // loop on each element
-      for(var a in viewObj[v].attribute)
-      {
-        // set each attribute for element
-        element.setAttribute(a, viewObj[v].attribute[a]);
-      }
-
-      // if innerHTML, set it
-      if(viewObj[v].innerHTML)
-      {
-        element.innerHTML = viewObj[v].innerHTML;
-      }
-
-      // if data is an aray, override innerHTML with data i
-      if(dataObj[v] && dataObj[v].constructor === Array)
-      {
-        if(typeof dataObj[v][i] == "object")
-        {
-          once = true;
-          renderView(viewObj[v].child, element, dataObj[v][i]);
-        }
-        else
-        {
-          if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v][i]);
-          else element.innerHTML = dataObj[v][i];
-        }
-      }
-
-      // else set data if string, number etc
-      else if(dataObj[v] && typeof dataObj[v] != "object")
-      {
-        if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v]);
-        else element.innerHTML = dataObj[v];
-      }
-
-      // if child, we create childs
-      if(!once && viewObj[v].child)
-      {
-        // create each child element with parent = current scope element recursively
-        if(dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v]);
-        else renderView(viewObj[v].child, element, dataObj);
-      }
-
-      // here append child to parent, you can use insertBefore either etc
-      if(parent) parent.appendChild(element);
-      else viewString += element.outerHTML;
+      viewString += renderView(viewObj, parent, dataObj[i]);
     }
+  }
+  else if(typeof dataObj == "object")
+  {
+    // if we have an object, we construct our view
+    for(var v in viewObj)
+    {
+      // if data is an array
+      if(dataObj[v] && dataObj[v].constructor === Array) viewObj[v].number = dataObj[v].length;
 
+      // number of iterations of this object
+      if(viewObj[v].number === undefined) viewObj[v].number = 1;
+
+  	  // if no tag, set it to div by default
+  	  if(!viewObj[v].tag) viewObj[v].tag = "div";
+
+      for(var i = 0; i < viewObj[v].number; i++)
+      {
+        // create obj with tag value
+        var element = document.createElement(viewObj[v].tag);
+
+        // loop on each element
+        for(var a in viewObj[v].attribute)
+        {
+          // set each attribute for element
+          element.setAttribute(a, viewObj[v].attribute[a]);
+        }
+
+        // if innerHTML, set it
+        if(viewObj[v].innerHTML)
+        {
+          element.innerHTML = viewObj[v].innerHTML;
+        }
+
+        // if data is an aray, override innerHTML with data i
+        if(dataObj[v] && dataObj[v].constructor === Array)
+        {
+          if(typeof dataObj[v][i] == "object")
+          {
+            //once = true;
+            renderView(viewObj[v].child, element, dataObj[v][i]);
+          }
+          else
+          {
+            if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v][i]);
+            else element.innerHTML = dataObj[v][i];
+          }
+        }
+
+        // else set data if string, number etc
+        else if(dataObj[v] && typeof dataObj[v] != "object")
+        {
+          if( viewObj[v].tag == "input") element.setAttribute('value', dataObj[v]);
+          else element.innerHTML = dataObj[v];
+        }
+
+        // if child, we create childs
+        if(!once && viewObj[v].child)
+        {
+          // create each child element with parent = current scope element recursively
+          if(dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v]);
+          else renderView(viewObj[v].child, element, dataObj);
+        }
+
+        // here append child to parent, you can use insertBefore either etc
+        if(parent) parent.appendChild(element);
+        else viewString += element.outerHTML;
+      }
+
+     }
+   }
+   else
+   {
+     // dataObj is bad, so we replace it by {}
+     viewString += renderView(viewObj, parent, {});
    }
 
    // return viewString in all case
