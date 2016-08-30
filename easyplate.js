@@ -56,6 +56,8 @@ function renderView(viewObj, parent, dataObj, optionObj)
     // if we have an object, we construct our view
     for(var v in viewObj)
     {
+      if(dataObj[v]) console.log(dataObj[v].length);
+
       // if data is an array
       if(dataObj[v] && dataObj[v].constructor === Array) viewObj[v].number = dataObj[v].length;
 
@@ -88,7 +90,7 @@ function renderView(viewObj, parent, dataObj, optionObj)
         {
           if(typeof dataObj[v][i] == "object")
           {
-            //once = true;
+            once = true;
             renderView(viewObj[v].child, element, dataObj[v][i], optionObj);
           }
           else
@@ -107,7 +109,8 @@ function renderView(viewObj, parent, dataObj, optionObj)
         if(!once && viewObj[v].child)
         {
           // create each child element with parent = current scope element recursively
-          if(dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v], optionObj);
+          if(dataObj[v] && dataObj[v].constructor === Array) renderView(viewObj[v].child, element, {}, optionObj);
+          else if(dataObj[v] && typeof dataObj[v] == "object") renderView(viewObj[v].child, element, dataObj[v], optionObj);
           else renderView(viewObj[v].child, element, dataObj, optionObj);
         }
 
