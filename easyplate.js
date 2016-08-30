@@ -18,10 +18,11 @@ function renderView(viewObj, parent, dataObj, optionObj)
   var once = false;
   // for speed, no need to check if empty or not
   if(!dataObj) dataObj = {};
-  if(!optionObj) optionObj =
+  if(!optionObj) optionObj = {};
+  if(!optionObj.setValue)
   {
     // default function, override it for fit your needs
-    setValue: function(element, value)
+    optionObj.setValue = function(element, value)
     {
       switch (element.tagName)
       {
@@ -38,8 +39,9 @@ function renderView(viewObj, parent, dataObj, optionObj)
           element.innerHTML = value;
           break;
       }
-    }
+    };
   };
+
   // if parent is null or undefined, we stock outerHTML of rendered element in
 	var viewString = "";
 
