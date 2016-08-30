@@ -15,7 +15,6 @@
  */
 function renderView(viewObj, parent, dataObj, optionObj)
 {
-  var once = false;
   // for speed, no need to check if empty or not
   if(!dataObj) dataObj = {};
   if(!optionObj) optionObj = {};
@@ -58,7 +57,7 @@ function renderView(viewObj, parent, dataObj, optionObj)
     // if we have an object, we construct our view
     for(var v in viewObj)
     {
-
+      var once = false;
       // if data is an array
       if(dataObj[v] && dataObj[v].constructor === Array) viewObj[v].number = dataObj[v].length;
 
