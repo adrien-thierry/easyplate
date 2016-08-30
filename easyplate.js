@@ -56,7 +56,6 @@ function renderView(viewObj, parent, dataObj, optionObj)
     // if we have an object, we construct our view
     for(var v in viewObj)
     {
-      if(dataObj[v]) console.log(dataObj[v].length);
 
       // if data is an array
       if(dataObj[v] && dataObj[v].constructor === Array) viewObj[v].number = dataObj[v].length;
